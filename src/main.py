@@ -71,7 +71,7 @@ async def main(page: ft.Page):
         src="",
         width=320,
         height=190,
-        fit=ft.ImageFit.COVER,
+        fit=ft.BoxFit.COVER,
         border_radius=ft.BorderRadius.all(14),
         visible=False,
     )
@@ -248,7 +248,6 @@ async def main(page: ft.Page):
                 elif d["status"] == "finished":
                     page.run_task(update_progress, 0.99)
 
-            ext_hint = "m4a" if selected_mode == "audio" else "mp4"
             template = str(DOWNLOAD_DIR / f"{base_name}.%(ext)s")
 
             opts = {
@@ -301,23 +300,30 @@ async def main(page: ft.Page):
 
     async def save_file(_):
         path = current_file["path"]
+
         if not path or not path.exists():
             result_text.value = "لا يوجد ملف جاهز للحفظ."
             page.update()
             return
 
-        destination = await file_picker.save_file(
-            dialog_title="حفظ الملف",
-            file_name=path.name,
-        )
-
-        if not destination:
-            return
-
         try:
-            import shutil
-            await asyncio.to_thread(shutil.copy2, path, destination)
-            result_text.value = f"✅ تم حفظ الملف في:\n{destination}"
+            # Android/iOS/Web require src_bytes when using FilePicker.save_file().
+            # Passing the bytes also works on desktop.
+            file_bytes = await asyncio.to_thread(path.read_bytes)
+
+            destination = await file_picker.save_file(
+                dialog_title="حفظ الملف",
+                file_name=path.name,
+                src_bytes=file_bytes,
+            )
+
+            if destination:
+                result_text.value = f"✅ تم حفظ الملف بنجاح."
+            else:
+                result_text.value = "تم إلغاء الحفظ."
+
+        except ValueError as ex:
+            result_text.value = f"❌ تعذر فتح نافذة الحفظ: {ex}"
         except Exception as ex:
             result_text.value = f"❌ تعذر حفظ الملف: {ex}"
 
@@ -381,3 +387,4 @@ async def main(page: ft.Page):
 
 if __name__ == "__main__":
     ft.run(main)
+
