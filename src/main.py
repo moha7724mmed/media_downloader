@@ -49,7 +49,7 @@ async def main(page: ft.Page):
         label="رابط الفيديو أو الصوت",
         hint_text="https://...",
         prefix_icon=ft.Icons.LINK,
-        text_direction=ft.TextDirection.LTR,
+        text_align=ft.TextAlign.LEFT,
         expand=True,
         border_radius=14,
     )
