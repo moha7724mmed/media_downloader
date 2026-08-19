@@ -1,30 +1,26 @@
-# Media Downloader
+# Media Downloader v0.3
 
-تطبيق Android مبني بـ Flet وyt-dlp.
+نسخة Android مبنية بـ Flet + yt-dlp، مع QuickJS وFFmpeg مضمّنين في APK.
 
-## الإصدار الأول
+## المكونات
+- Flet 0.86.2
+- yt-dlp 2026.07.04
+- yt-dlp-ejs 0.8.0 عبر `yt-dlp[default]`
+- QuickJS NG 0.15.1 مبني لـ Android arm64-v8a داخل GitHub Actions
+- FFmpeg 8.1.2 Android arm64 مضمّن في APK
 
-- تحليل الرابط.
-- عرض العنوان والصورة والمدة.
-- تنزيل فيديو بصيغة MP4 عندما يوفر المصدر ملفًا واحدًا يحتوي على الصوت والفيديو.
-- تنزيل أفضل مسار صوتي متاح، ويفضل M4A.
-- شريط تقدم.
-- حفظ الملف عبر نافذة Android لاختيار مكان الحفظ.
-- بناء APK عبر GitHub Actions.
-
-## ملاحظة مهمة عن FFmpeg
-
-هذا الإصدار يتجنب الاعتماد على FFmpeg داخل APK، لذلك لا يقوم بتحويل الصوت إلى MP3 ولا يدمج مسارين منفصلين. إذا كانت جودة مثل 1080p متاحة فقط كفيديو منفصل + صوت منفصل، فسيختار التطبيق أفضل صيغة منفردة تحتوي على الصوت.
-
-المرحلة التالية يمكن أن تضيف FFmpeg Android مضمّنًا للتطبيق لدعم:
-- MP3
-- دمج video + audio
-- 1080p/1440p/4K عندما تكون المسارات منفصلة.
+## الوظائف
+- تحليل الروابط العامة التي يدعمها yt-dlp.
+- فيديو: أفضل جودة أو 1080p/720p/480p/360p.
+- صوت: استخراج MP3 بجودة 192 kbps.
+- دمج video + audio بواسطة FFmpeg.
+- شريط تقدم وحفظ الملف عبر Android FilePicker.
 
 ## البناء
+Actions → Build Media Downloader APK → Run workflow
 
-في GitHub افتح Actions ثم:
-Build Media Downloader APK → Run workflow
 
-بعد نجاح البناء:
-Artifacts → MediaDownloader-APK
+## Multi-site support
+The app uses yt-dlp's generic extractors instead of hard-coding one platform.
+Common platforms include YouTube, Facebook, Instagram, TikTok, X/Twitter,
+Vimeo, Dailymotion, Reddit and Twitch, subject to each site's current support.
